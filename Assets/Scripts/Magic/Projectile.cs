@@ -31,7 +31,7 @@ namespace Magic
             }
 
             Creature creature;
-            if (other.TryGetComponent<Creature>(out creature) && other.GetInstanceID() != casterID)
+            if (other.TryGetComponent<Creature>(out creature) && other.gameObject.GetInstanceID() != casterID)
             {
                 creature.TakeDamage();
             }

@@ -9,18 +9,19 @@ namespace Creature.Player {
     public class PlayerMovement : MonoBehaviour
     {
         [SerializeField] private float moveSpeed = 5f;
-        [SerializeField] private Camera cam;
 
         private CharacterController ch;
+        private Player player;
 
         private void Start()
         {
             ch = GetComponent<CharacterController>();
+            player = GetComponent<Player>();
         }
 
         public void HandleMovement()
         {
-            Vector2 moveDir2D = MyMath.RotateVector2(inputMoveDir(), -cam.transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
+            Vector2 moveDir2D = MyMath.RotateVector2(inputMoveDir(), -player.GetCamera().transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
             Vector3 motion = new Vector3(moveDir2D.x, 0f, moveDir2D.y) * moveSpeed * Time.deltaTime;
 
             ch.Move(motion);

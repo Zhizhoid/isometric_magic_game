@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51a00bf3a2c1a354b8f005fbba6d645e, type: 3}
-  m_Name: SpellProjectile
+  m_Name: TestSpell1
   m_EditorClassIdentifier: 
   manaCost: 0
   projectile: {fileID: 7850470525985120992, guid: 2cfe4e4372d6f404896ac594239ab722, type: 3}

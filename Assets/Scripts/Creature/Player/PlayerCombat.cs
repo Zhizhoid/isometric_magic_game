@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,12 +6,18 @@ using Magic;
 
 namespace Creature.Player
 {
+    [RequireComponent(typeof(Player))]
     public class PlayerCombat : MonoBehaviour
     {
         [SerializeField] private Spell spell1;
         [SerializeField] private Spell spell2;
 
+        private Player player;
         private CastStats castStats = new CastStats();
+
+        private void Start() {
+            player = GetComponent<Player>();
+        }
 
         public void HandleCombat()
         {
@@ -18,25 +25,21 @@ namespace Creature.Player
             {
                 refreshCastStats();
                 spell1.Cast(castStats);
-                //Debug.Log("I am casting a spell - projectile");
             }
 
             if (Input.GetMouseButtonDown(1))
             {
                 refreshCastStats();
-
-                //Debug.Log("I am casting a spell - puddle");
-                //spell2.Cast();
+                spell2.Cast(castStats);
             }
         }
 
         private void refreshCastStats()
         {
             castStats.castPosition = transform.position;
-
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            
+            Ray ray = player.GetCamera().ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 castStats.castDirection = new Vector3(hit.point.x - transform.position.x, 0f, hit.point.z - transform.position.z).normalized;
             }

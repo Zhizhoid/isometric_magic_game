@@ -11,6 +11,8 @@ namespace Creature.Player
         private PlayerMovement pMovement;
         private PlayerCombat pCombat;
 
+        [SerializeField] private Camera cam;
+
         private void Start()
         {
             pMovement = GetComponent<PlayerMovement>();
@@ -21,6 +23,10 @@ namespace Creature.Player
         {
             pMovement.HandleMovement();
             pCombat.HandleCombat();
+        }
+
+        public Camera GetCamera() {
+            return cam;
         }
     }
 }
