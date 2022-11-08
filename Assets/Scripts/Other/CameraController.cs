@@ -6,20 +6,35 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
     [SerializeField] private Transform target;
-    [SerializeField][Range(0f, 1f)] private float cameraSpeed = 0.5f;
+    [SerializeField] private float cameraSpeed = 0.5f;
+    [SerializeField][Range(0f, 360f)] private float rotationSpeed;
 
-    private Vector3 offset;
+    private Vector3 startPosOffset;
+    private Vector3 posOffset;
+
+    private Vector3 startRot;
+    private float rotOffset = 0f;
 
     private void Start()
     {
-        offset = transform.position - target.position;
+        posOffset = startPosOffset = transform.position - target.position;
+        startRot = transform.rotation.eulerAngles;
     }
 
     void Update() {
-        Debug.DrawLine(transform.position, target.position + offset);
-        transform.position = Vector3.Lerp(
-                transform.position, 
-                target.position + offset, 
-                cameraSpeed * Time.deltaTime);
+        if (Input.GetKeyDown("r"))
+        {
+            posOffset = startPosOffset;
+            rotOffset = 0f;
+        }
+
+        float rotDir = (Input.GetKey("q") ? -1 : 0) + (Input.GetKey("e") ? 1 : 0);
+        rotOffset += rotDir * rotationSpeed * Time.deltaTime;
+        Vector2 newOffset2D = MyMath.RotateVector2(new Vector2(startPosOffset.x, startPosOffset.z), rotOffset * Mathf.Deg2Rad);
+        posOffset = new Vector3(newOffset2D.x, posOffset.y, newOffset2D.y);
+
+        transform.position = Vector3.Lerp(transform.position, target.position + posOffset, cameraSpeed * Time.deltaTime);
+        //transform.LookAt(target);
+        transform.rotation = Quaternion.Euler(startRot.x, startRot.y - rotOffset, startRot.z);
     }
 }

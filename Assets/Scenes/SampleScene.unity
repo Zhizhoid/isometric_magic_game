@@ -563,7 +563,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 8.1
   m_Depth: -1
   m_CullingMask:
@@ -608,7 +608,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 482340383}
-  cameraSpeed: 0.75
+  cameraSpeed: 10
+  rotationSpeed: 100
 --- !u!1 &1050059326
 GameObject:
   m_ObjectHideFlags: 0
@@ -818,7 +819,7 @@ GameObject:
   - component: {fileID: 1172671795}
   m_Layer: 0
   m_Name: Cube2
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
