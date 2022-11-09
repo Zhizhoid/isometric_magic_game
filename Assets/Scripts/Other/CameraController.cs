@@ -34,7 +34,8 @@ public class CameraController : MonoBehaviour {
         posOffset = new Vector3(newOffset2D.x, posOffset.y, newOffset2D.y);
 
         transform.position = Vector3.Lerp(transform.position, target.position + posOffset, cameraSpeed * Time.deltaTime);
-        //transform.LookAt(target);
-        transform.rotation = Quaternion.Euler(startRot.x, startRot.y - rotOffset, startRot.z);
+
+        float lerpedRot = Mathf.LerpAngle(transform.rotation.eulerAngles.y, startRot.y - rotOffset, cameraSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Euler(startRot.x, lerpedRot, startRot.z);
     }
 }
