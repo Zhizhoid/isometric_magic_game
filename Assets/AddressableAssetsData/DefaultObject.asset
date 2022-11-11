@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51a00bf3a2c1a354b8f005fbba6d645e, type: 3}
-  m_Name: TestSpell2
+  m_Script: {fileID: 11500000, guid: 3a189bb168d8d90478a09ea08c2f3d72, type: 3}
+  m_Name: DefaultObject
   m_EditorClassIdentifier: 
-  manaCost: 0
-  projectile: {fileID: 6391015281216492425, guid: 361c82d60eee56948b2fc9021b482fbc, type: 3}
+  m_AddressableAssetSettingsGuid: 2974243c91884ec49b8406e33f0c9531

@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CastStats
+public struct CastStats
 {
     public Vector3 castPosition;
-    public Vector3 castDirection;
+    public Vector3 castPoint;
     public int casterID;
+
+    public Vector3 GetCastDirection()
+    {
+        return new Vector3(castPoint.x - castPosition.x, 0f, castPoint.z - castPosition.z).normalized;
+    }
 }

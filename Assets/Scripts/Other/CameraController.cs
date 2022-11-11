@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
     [SerializeField] private Transform target;
-    [SerializeField] private float cameraSpeed = 0.5f;
+    [SerializeField] private float cameraSpeed = 10f;
     [SerializeField][Range(0f, 360f)] private float rotationSpeed;
 
     private Vector3 startPosOffset;

@@ -13,8 +13,14 @@ namespace Magic
         public Vector3 direction;
         public int casterID;
 
+        [SerializeField] private float lifetime;
         [SerializeField] private float velocity;
         [SerializeField] private float acceleration;
+
+        private void Start()
+        {
+            StartCoroutine(setDespawn());    
+        }
 
         private void Update()
         {
@@ -35,6 +41,16 @@ namespace Magic
             {
                 creature.TakeDamage();
             }
+        }
+
+        private IEnumerator setDespawn()
+        {
+            float end = Time.time + lifetime;
+            while (Time.time < end)
+            {
+                yield return null;
+            }
+            Destroy(gameObject);
         }
     }
 }

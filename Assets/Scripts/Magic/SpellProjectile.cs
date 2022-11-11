@@ -10,7 +10,7 @@ namespace Magic
         [SerializeField] private Projectile projectile;
         public override void Cast(CastStats castStats)
         {
-            projectile.direction = castStats.castDirection;
+            projectile.direction = castStats.GetCastDirection();
             projectile.casterID = castStats.casterID;
 
             Instantiate(projectile, castStats.castPosition, Quaternion.identity);
