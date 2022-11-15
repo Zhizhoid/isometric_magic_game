@@ -14,6 +14,8 @@ namespace Magic
         public int casterID;
 
         [SerializeField] private float lifetime;
+        [SerializeField] private Damage damage;
+
         [SerializeField] private float velocity;
         [SerializeField] private float acceleration;
 
@@ -36,9 +38,9 @@ namespace Magic
                 return;
             }
             
-            if (other.TryGetComponent(out Creature creature) && other.gameObject.GetInstanceID() != casterID)
+            if (other.TryGetComponent(out IDamageble damageble) && other.gameObject.GetInstanceID() != casterID)
             {
-                creature.TakeDamage();
+                damageble.TakeDamage(damage);
                 Destroy(gameObject);
             }
         }

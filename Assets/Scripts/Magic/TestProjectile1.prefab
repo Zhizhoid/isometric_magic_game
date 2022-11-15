@@ -127,8 +127,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b904111cf37ce14489559497946713ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: {x: -0.2871136, y: 0, z: -0.95789653}
-  casterID: 23028
+  direction: {x: 1, y: 0, z: 0}
+  casterID: 24164
   lifetime: 2
+  damage:
+    amount: 1
   velocity: 2
   acceleration: 10

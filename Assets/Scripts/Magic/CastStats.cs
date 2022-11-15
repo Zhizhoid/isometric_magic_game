@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct CastStats
+namespace Magic
 {
-    public Vector3 castPosition;
-    public Vector3 castPoint;
-    public int casterID;
-
-    public Vector3 GetCastDirection()
+    public struct CastStats
     {
-        return new Vector3(castPoint.x - castPosition.x, 0f, castPoint.z - castPosition.z).normalized;
+        public Vector3 castPosition;
+        public Vector3 castPoint;
+        public int casterID;
+
+        public Vector3 GetCastDirection()
+        {
+            return new Vector3(castPoint.x - castPosition.x, 0f, castPoint.z - castPosition.z).normalized;
+        }
     }
 }

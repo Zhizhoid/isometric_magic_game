@@ -10,6 +10,7 @@ namespace Magic
     public class Puddle : MonoBehaviour
     {
         [SerializeField] private float lifetime;
+        [SerializeField] private Damage damage;
 
         private void Start()
         {
@@ -18,10 +19,9 @@ namespace Magic
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out Creature creature))
+            if (other.TryGetComponent(out IDamageble damageble))
             {
-                Debug.Log(1);
-                creature.TakeDamage();
+                damageble.TakeDamage(damage);
             }
         }
 

@@ -18,7 +18,6 @@ namespace UI {
 
             hc.currentHealthChanged += () => {
                 targetValue = hc.GetCurrentHealth() / hc.GetMaxHealth();
-                Debug.Log(hc.GetCurrentHealth());
             };
         }
 

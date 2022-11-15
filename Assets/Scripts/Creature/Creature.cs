@@ -6,16 +6,16 @@ using UnityEngine;
 namespace Creature
 {
     [RequireComponent(typeof(HealthController))]
-    public class Creature : MonoBehaviour {
+    public class Creature : MonoBehaviour, IDamageble {
         private HealthController healthController;
         protected virtual void Start() {
             healthController = GetComponent <HealthController>();
             healthController.currentHealthChanged += onCurrentHealthChanged;
         }
 
-        public void TakeDamage() {
-            Debug.Log(gameObject.name + " took damage");
-            healthController.ChangeCurrentHealth(-1f);
+        public void TakeDamage(Damage damage) {
+            Debug.Log(gameObject.name + " took " + damage.amount + " damage");
+            healthController.ChangeCurrentHealth(-damage.amount);
         }
 
         private void onCurrentHealthChanged() {
