@@ -30,16 +30,16 @@ namespace Magic
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.tag == "Environment")
+            if (other.CompareTag("Environment"))
             {
                 Destroy(gameObject);
                 return;
             }
-
-            Creature creature;
-            if (other.TryGetComponent<Creature>(out creature) && other.gameObject.GetInstanceID() != casterID)
+            
+            if (other.TryGetComponent(out Creature creature) && other.gameObject.GetInstanceID() != casterID)
             {
                 creature.TakeDamage();
+                Destroy(gameObject);
             }
         }
 

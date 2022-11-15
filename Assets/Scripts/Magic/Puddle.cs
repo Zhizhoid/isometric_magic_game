@@ -5,6 +5,8 @@ using UnityEngine;
 namespace Magic
 {
     using Creature;
+    
+    [RequireComponent(typeof(Rigidbody))]
     public class Puddle : MonoBehaviour
     {
         [SerializeField] private float lifetime;
@@ -16,9 +18,9 @@ namespace Magic
 
         private void OnTriggerEnter(Collider other)
         {
-            Creature creature;
-            if (other.TryGetComponent<Creature>(out creature))
+            if (other.TryGetComponent(out Creature creature))
             {
+                Debug.Log(1);
                 creature.TakeDamage();
             }
         }
