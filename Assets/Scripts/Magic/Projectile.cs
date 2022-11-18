@@ -1,28 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Health;
 
 namespace Magic
 {
-    using Creature;
-
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Collider))]
-    public class Projectile : MonoBehaviour
+    public class Projectile : MagicalEntity
     {
-        public Vector3 direction;
-        public int casterID;
-
-        [SerializeField] private float lifetime;
-        [SerializeField] private Damage damage;
+        private Vector3 direction;
+        private int casterID;
 
         [SerializeField] private float velocity;
         [SerializeField] private float acceleration;
-
-        private void Start()
-        {
-            StartCoroutine(setDespawn());    
-        }
 
         private void Update()
         {
@@ -45,14 +36,14 @@ namespace Magic
             }
         }
 
-        private IEnumerator setDespawn()
+        public void SetCasterID(int id)
         {
-            float end = Time.time + lifetime;
-            while (Time.time < end)
-            {
-                yield return null;
-            }
-            Destroy(gameObject);
+            casterID = id;
+        }
+
+        public void SetDirection(Vector3 _direction)
+        {
+            direction = _direction;
         }
     }
 }

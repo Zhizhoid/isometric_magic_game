@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Creature.Player
+namespace Creatures.Player
 {
     [RequireComponent(typeof(PlayerMovement))]
     [RequireComponent(typeof(PlayerCombat))]

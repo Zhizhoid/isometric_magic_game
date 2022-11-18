@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Creature.Player;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {

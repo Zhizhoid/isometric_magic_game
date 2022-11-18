@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Magic;
 
-namespace Creature.Player
+namespace Creatures.Player
 {
     [RequireComponent(typeof(Player))]
     public class PlayerCombat : MonoBehaviour
@@ -39,7 +39,8 @@ namespace Creature.Player
             castStats.castPosition = transform.position;
             
             Ray ray = player.GetCamera().ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            int layerMask =~ LayerMask.GetMask("Ignore Raycast");
+            if (Physics.Raycast(ray, out RaycastHit hit, float.PositiveInfinity, layerMask))
             {
                 castStats.castPoint = hit.point;
             }

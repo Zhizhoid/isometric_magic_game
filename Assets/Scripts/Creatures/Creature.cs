@@ -1,16 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Health;
 
 
-namespace Creature
+namespace Creatures
 {
+    [RequireComponent(typeof(StatusController))]
     [RequireComponent(typeof(HealthController))]
     public class Creature : MonoBehaviour, IDamageble {
         private HealthController healthController;
+        private StatusController statusController;
+
         protected virtual void Start() {
-            healthController = GetComponent <HealthController>();
+            healthController = GetComponent<HealthController>();
             healthController.currentHealthChanged += onCurrentHealthChanged;
+
+            statusController = GetComponent<StatusController>();
+        }
+
+        public void AddStatusEffect(StatusEffect statusEffect)
+        {
+            statusController.AddStatusEffect(statusEffect);
         }
 
         public void TakeDamage(Damage damage) {
@@ -24,6 +35,7 @@ namespace Creature
             }
         }
         private void die() {
+            Debug.Log(gameObject.name + " died");
             gameObject.SetActive(false);
         }
     }

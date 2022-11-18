@@ -1,38 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Health;
 
 namespace Magic
 {
-    using Creature;
-    
+
     [RequireComponent(typeof(Rigidbody))]
-    public class Puddle : MonoBehaviour
+    [RequireComponent(typeof(Collider))]
+    public class Puddle : MagicalEntity
     {
-        [SerializeField] private float lifetime;
-        [SerializeField] private Damage damage;
-
-        private void Start()
-        {
-            StartCoroutine(setDespawn());
-        }
-
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent(out IDamageble damageble))
             {
                 damageble.TakeDamage(damage);
-            }
-        }
 
-        private IEnumerator setDespawn()
-        {
-            float end = Time.time + lifetime;
-            while (Time.time < end)
-            {
-                yield return null;
+                StatusEffect testEffect = new StatusEffect();
+                testEffect.name = "SuperMegaStatusEffect";
+                damageble.AddStatusEffect(testEffect);
             }
-            Destroy(gameObject);
         }
     }
 }
