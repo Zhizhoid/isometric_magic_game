@@ -31,7 +31,8 @@ namespace Magic
             
             if (other.TryGetComponent(out IDamageble damageble) && other.gameObject.GetInstanceID() != casterID)
             {
-                damageble.TakeDamage(damage);
+                hitTarget(damageble);
+
                 Destroy(gameObject);
             }
         }

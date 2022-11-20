@@ -131,7 +131,13 @@ MonoBehaviour:
   damage:
     amount: 1
     element: 2
-  direction: {x: -0.696979, y: 0, z: 0.71709156}
-  casterID: 24048
+  hasStatusEffect: 1
+  statusEffect:
+    name: ProjectileEffect
+    lifetime: 2
+    tickRate: 0.1
+    tickDamage:
+      amount: 0.5
+      element: 2
   velocity: 2
   acceleration: 10

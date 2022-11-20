@@ -360,7 +360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441f886cc6d55294c93bb4585d831e19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10
+  maxHealth: 50
 --- !u!114 &482340390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1453,6 +1453,7 @@ GameObject:
   - component: {fileID: 1974915115}
   - component: {fileID: 1974915114}
   - component: {fileID: 1974915116}
+  - component: {fileID: 1974915117}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1562,7 +1563,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441f886cc6d55294c93bb4585d831e19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 5
+  maxHealth: 20
 --- !u!114 &1974915116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1576,5 +1577,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spell: {fileID: 11400000, guid: 8c26df4150ea0804e8849c5fc69de903, type: 2}
-  spellDelay: 1
+  spellDelay: 0.1
   fireAngle: 0
+--- !u!114 &1974915117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1974915109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea567be209ce2b4c99fb5b513c76742, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

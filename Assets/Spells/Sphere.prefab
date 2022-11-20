@@ -100,8 +100,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifetime: 5
   damage:
-    amount: 5
+    amount: 4
     element: 1
+  hasStatusEffect: 1
+  statusEffect:
+    name: PuddleEffect
+    lifetime: 5
+    tickRate: 1
+    tickDamage:
+      amount: 5
+      element: 0
 --- !u!54 &8616957910162408858
 Rigidbody:
   m_ObjectHideFlags: 0
