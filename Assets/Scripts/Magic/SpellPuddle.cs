@@ -12,7 +12,9 @@ namespace Magic
         {
             Ray ray = new Ray(castStats.castPoint + Vector3.up*0.001f, Vector3.down);
             if( Physics.Raycast(ray, out RaycastHit hit, float.PositiveInfinity, LayerMask.GetMask("Ground")) ) {
-                Instantiate(puddle, hit.point, Quaternion.identity);
+                if (castStats.casterManaController.UseMana(manaCost)) {
+                    Instantiate(puddle, hit.point, Quaternion.identity);
+                }
             }
         }
     }

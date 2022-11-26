@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifetime: 5
   damage:
-    amount: 4
+    amount: 0
     element: 1
   hasStatusEffect: 1
   statusEffect:
@@ -109,7 +109,7 @@ MonoBehaviour:
     tickRate: 1
     tickDamage:
       amount: 5
-      element: 0
+      element: 1
 --- !u!54 &8616957910162408858
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,12 @@ namespace Magic
         {
             if (other.TryGetComponent(out IDamageble damageble)) {
                 hitTarget(damageble);
+            }
+        }
+
+        private void OnTriggerStay(Collider other) {
+            if (other.TryGetComponent(out IDamageble damageble)) {
+                damageble.AddStatusEffect(statusEffect);
             }
         }
     }

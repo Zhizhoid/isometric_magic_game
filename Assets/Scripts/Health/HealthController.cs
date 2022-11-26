@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace Health
 {
-    public class HealthController : MonoBehaviour
+    public class HealthController : MonoBehaviour, UI.IBarValue
     {
         [SerializeField] private float maxHealth = 5f;
         private float currentHealth;
 
-        public event Action currentHealthChanged;
+        public event Action currentValueChanged;
 
         private void Start()
         {
@@ -20,7 +20,7 @@ namespace Health
         public void ChangeCurrentHealth(float delta)
         {
             currentHealth += delta;
-            currentHealthChanged?.Invoke();
+            currentValueChanged?.Invoke();
         }
 
         public float GetMaxHealth()
@@ -30,6 +30,14 @@ namespace Health
 
         public float GetCurrentHealth()
         {
+            return currentHealth;
+        }
+
+        public float GetMaxValue() {
+            return maxHealth;
+        }
+
+        public float GetCurrentValue() {
             return currentHealth;
         }
     }

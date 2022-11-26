@@ -14,7 +14,7 @@ namespace Creatures
 
         protected virtual void Start() {
             healthController = GetComponent<HealthController>();
-            healthController.currentHealthChanged += onCurrentHealthChanged;
+            healthController.currentValueChanged += onCurrentHealthChanged;
 
             statusController = GetComponent<StatusController>();
         }

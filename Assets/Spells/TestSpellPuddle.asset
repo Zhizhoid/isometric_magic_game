@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f016e78a86587f478833e32bf62eb5a, type: 3}
   m_Name: TestSpellPuddle
   m_EditorClassIdentifier: 
-  manaCost: 0
+  manaCost: 15
   puddle: {fileID: 5281038805506447359, guid: 619de04f715070f40907c76660bb9554, type: 3}

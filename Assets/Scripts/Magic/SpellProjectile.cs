@@ -10,9 +10,11 @@ namespace Magic
         [SerializeField] private Projectile projectile;
         public override void Cast(CastStats castStats)
         {
-            Projectile instance = Instantiate(projectile, castStats.castPosition, Quaternion.identity);
-            instance.SetCasterID(castStats.casterID);
-            instance.SetDirection(castStats.GetCastDirection());
+            if (castStats.casterManaController.UseMana(manaCost)) {
+                Projectile instance = Instantiate(projectile, castStats.castPosition, Quaternion.identity);
+                instance.SetCasterID(castStats.casterID);
+                instance.SetDirection(castStats.GetCastDirection());
+            }
         }
     }
 }

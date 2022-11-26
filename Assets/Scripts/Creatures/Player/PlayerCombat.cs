@@ -7,6 +7,7 @@ using Magic;
 namespace Creatures.Player
 {
     [RequireComponent(typeof(Player))]
+    [RequireComponent(typeof(ManaController))]
     public class PlayerCombat : MonoBehaviour
     {
         [SerializeField] private Spell spell1;
@@ -17,6 +18,9 @@ namespace Creatures.Player
 
         private void Start() {
             player = GetComponent<Player>();
+
+            castStats.casterID = gameObject.GetInstanceID();
+            castStats.casterManaController = GetComponent<ManaController>();
         }
 
         public void HandleCombat()
@@ -44,8 +48,6 @@ namespace Creatures.Player
             {
                 castStats.castPoint = hit.point;
             }
-
-            castStats.casterID = gameObject.GetInstanceID();
         }
     }
 }

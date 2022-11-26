@@ -12,7 +12,13 @@ public class testEnemy : MonoBehaviour
     private CastStats castStats;
     private float lastCastTime = 0f;
 
-    public void Update()
+    private void Start()
+    {
+        castStats.casterID = gameObject.GetInstanceID();
+        castStats.casterManaController = GetComponent<ManaController>();
+    }
+
+    private void Update()
     {
         if(Time.time >= lastCastTime+spellDelay)
         {
@@ -20,8 +26,6 @@ public class testEnemy : MonoBehaviour
 
             Vector2 castPoint2D = MyMath.RotateVector2(Vector2.right, fireAngle * Mathf.Deg2Rad);
             castStats.castPoint = transform.position + new Vector3(castPoint2D.x, 0f, castPoint2D.y);
-
-            castStats.casterID = gameObject.GetInstanceID();
 
             spell.Cast(castStats);
             lastCastTime = Time.time;

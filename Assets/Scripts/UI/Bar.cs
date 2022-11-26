@@ -2,22 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Health;
 
 namespace UI {
     [RequireComponent(typeof(Slider))]
-    public class HealthBar : MonoBehaviour {
-        [SerializeField] private HealthController hc;
+    public class Bar : MonoBehaviour {
+        
+        [SerializeField] private GameObject barValueObject;
+        [SerializeField] private Component barValueComponent;
+        private IBarValue barValue;
         [SerializeField] private float lerpSpeed = 10f;
         
         private Slider slider;
         private float targetValue = 1f;
 
         private void Start() {
+            //barValue = barValueObject.GetComponent<IBarValue>();
+            barValue = barValueComponent as IBarValue;
             slider = GetComponent<Slider>();
 
-            hc.currentHealthChanged += () => {
-                targetValue = hc.GetCurrentHealth() / hc.GetMaxHealth();
+            barValue.currentValueChanged += () => {
+                targetValue = barValue.GetCurrentValue() / barValue.GetMaxValue();
             };
         }
 

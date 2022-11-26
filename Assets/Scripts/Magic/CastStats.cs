@@ -9,6 +9,7 @@ namespace Magic
         public Vector3 castPosition;
         public Vector3 castPoint;
         public int casterID;
+        public ManaController casterManaController;
 
         public Vector3 GetCastDirection()
         {
