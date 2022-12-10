@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Creatures.Pathfinding
+namespace Creatures.NPCs.Pathfinding
 {
     public struct Node
     {

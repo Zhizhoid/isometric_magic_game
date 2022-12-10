@@ -11,8 +11,7 @@ public static class MyMath
     /// <param name="vector"></param>
     /// <param name="angle"></param>
     /// <returns></returns>
-    public static Vector2 RotateVector2(Vector2 vector, float angle)
-    {
+    public static Vector2 RotateVector2(Vector2 vector, float angle) {
         float cosA = Mathf.Cos(angle);
         float sinA = Mathf.Sin(angle);
 
@@ -21,5 +20,9 @@ public static class MyMath
 
 
         return vector.x * newX + vector.y * newY;
+    }
+
+    public static float SquareOf(float f) {
+        return f * f;
     }
 }
