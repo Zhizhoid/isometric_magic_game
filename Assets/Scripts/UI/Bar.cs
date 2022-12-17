@@ -20,7 +20,7 @@ namespace UI {
             barValue = barValueComponent as IBarValue;
             slider = GetComponent<Slider>();
 
-            barValue.currentValueChanged += () => {
+            barValue.currentValueChanged += (delta) => {
                 targetValue = barValue.GetCurrentValue() / barValue.GetMaxValue();
             };
         }

@@ -10,7 +10,7 @@ namespace Health
         [SerializeField] private float maxHealth = 5f;
         private float currentHealth;
 
-        public event Action currentValueChanged;
+        public event Action<float> currentValueChanged;
 
         private void Start()
         {
@@ -20,7 +20,7 @@ namespace Health
         public void ChangeCurrentHealth(float delta)
         {
             currentHealth += delta;
-            currentValueChanged?.Invoke();
+            currentValueChanged?.Invoke(delta);
         }
 
         public float GetMaxHealth()

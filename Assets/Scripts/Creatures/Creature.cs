@@ -29,7 +29,7 @@ namespace Creatures
             healthController.ChangeCurrentHealth(-damage.amount);
         }
 
-        private void onCurrentHealthChanged() {
+        private void onCurrentHealthChanged(float delta) {
             if (healthController.GetCurrentHealth() <= 0f) {
                 die();
             }
