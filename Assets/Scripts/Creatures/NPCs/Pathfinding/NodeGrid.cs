@@ -1,34 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Creatures.NPCs.Pathfinding {
+
     public class NodeGrid : MonoBehaviour
     {
         [SerializeField] private LayerMask unwalkable;
         [SerializeField] private Vector2 gridWorldSize;
         [SerializeField][Range(0.1f, 1f)] private float nodeSize;
 
-        [SerializeField] Transform player;
-
-        struct Int2 {
-            public int x;
-            public int y;
-            
-            public Int2(int _x, int _y)
-            {
-                x = _x;
-                y = _y;
-            }
-            public static Int2 operator +(Int2 a, Int2 b) => new Int2(a.x + a.x, a.y + a.y);
-            public static Int2 operator -(Int2 a, Int2 b) => new Int2(a.x - a.x, a.y - a.y);
-            public static bool operator ==(Int2 a, Int2 b) => a.x == b.x && a.y == b.y;
-            public static bool operator !=(Int2 a, Int2 b) => a.x != b.x || a.y != b.y;
-        }
-
         private Node[,] grid;
         private Int2 gridSize;
+        public Int2 Size
+        {
+            get
+            {
+                return gridSize;
+            }
+        }
+
         private Vector2 worldBottomLeft;
+
+        private Pathfinder pathfinder;
+
+        [SerializeField] Transform player;
+        [SerializeField] Transform target;
+        private List<Node> path;
 
         private void OnDrawGizmos()
         {
@@ -43,9 +42,12 @@ namespace Creatures.NPCs.Pathfinding {
                     {
                         Node node = grid[x, y];
 
-                        Gizmos.color = new Int2(x, y) != worldPosToNodeCoords(new Vector2(player.position.x, player.position.z))
-                                                         ? (node.walkable ? Color.green : Color.red)
-                                                         : Color.blue;
+                        Gizmos.color = node.walkable ? Color.green : Color.red;
+
+                        if(path != null && path.Contains(node))
+                        {
+                            Gizmos.color = Color.yellow;
+                        }
 
                         Gizmos.DrawCube(new Vector3(node.worldPosition.x, transform.position.y, node.worldPosition.y),
                                         new Vector3(nodeSize * 0.9f, 0.2f, nodeSize * 0.9f));
@@ -54,18 +56,91 @@ namespace Creatures.NPCs.Pathfinding {
             }
         }
 
+        private void Awake()
+        {
+            pathfinder = GetComponent<Pathfinder>();
+        }
+
         private void Start()
         {
             createGrid();
         }
 
-        private Int2 worldPosToNodeCoords(Vector2 worldPos)
+        private void Update()
         {
-            Int2 coords;
-            coords.x = Mathf.RoundToInt(Mathf.Clamp01((worldPos.x - worldBottomLeft.x) / gridWorldSize.x) * gridSize.x);
-            coords.y = Mathf.RoundToInt(Mathf.Clamp01((worldPos.y - worldBottomLeft.y) / gridWorldSize.y) * gridSize.y);
+            List<Node> newPath = pathfinder.FindPath(player.position, target.position);
+            if (newPath != null)
+            {
+                path = newPath;
+            }
+        }
 
-            return coords;
+        public Node WorldPosToClosestWalkableNode(Vector2 worldPos)
+        {
+            return ClosestWalkableNode(WorldPosToNode(worldPos));
+        }
+
+        public Node WorldPosToNode(Vector2 worldPos)
+        {
+            int x = Mathf.CeilToInt(Mathf.Clamp01((worldPos.x - worldBottomLeft.x) / gridWorldSize.x) * (gridSize.x - 1));
+            int y = Mathf.CeilToInt(Mathf.Clamp01((worldPos.y - worldBottomLeft.y) / gridWorldSize.y) * (gridSize.y - 1));
+
+            return grid[x, y];
+        }
+
+        public Node ClosestWalkableNode(Node node)
+        {
+            Queue<Node> queue = new Queue<Node>();
+            HashSet<Node> enqued = new HashSet<Node>();
+
+            queue.Enqueue(node);
+            enqued.Add(node);
+
+            return closestWalkableNodeRec(queue, enqued);
+        }
+
+        private Node closestWalkableNodeRec(Queue<Node> queue, HashSet<Node> enqued)
+        {
+            Node node = queue.Dequeue();
+            if(node.walkable)
+            {
+                return node;
+            }
+
+            foreach(Node neighbour in GetNeighbours(node))
+            {
+                if (enqued.Contains(neighbour))
+                {
+                    continue;
+                }
+                queue.Enqueue(neighbour);
+                enqued.Add(node);
+            }
+
+            return closestWalkableNodeRec(queue, enqued);
+        }
+
+        public List<Node> GetNeighbours(Node node)
+        {
+            List<Node> neighbours = new List<Node>();
+
+            for(int x = -1; x <= 1; x++)
+            {
+                for(int y = -1; y <= 1; y++)
+                {
+                    if(x == 0 && y == 0) { continue; }
+
+                    int neighbourX = node.coords.x + x;
+                    int neighbourY = node.coords.y + y;
+
+                    if (neighbourX >= 0 && neighbourX < gridSize.x && neighbourY >= 0 && neighbourY < gridSize.y)
+                    {
+                        neighbours.Add(grid[neighbourX, neighbourY]);
+                    }
+                }
+            }
+
+            return neighbours;
         }
 
         private void createGrid()
@@ -89,7 +164,7 @@ namespace Creatures.NPCs.Pathfinding {
                         unwalkable
                     );
 
-                    grid[x, y] = new Node(worldPos2D, walkable);
+                    grid[x, y] = new Node(worldPos2D, walkable, new Int2(x, y));
                 }
             }
         }
