@@ -11,8 +11,8 @@ public struct Int2
         y = _y;
     }
 
-    public static Int2 operator +(Int2 a, Int2 b) => new Int2(a.x + a.x, a.y + a.y);
-    public static Int2 operator -(Int2 a, Int2 b) => new Int2(a.x - a.x, a.y - a.y);
+    public static Int2 operator +(Int2 a, Int2 b) => new Int2(a.x + b.x, a.y + b.y);
+    public static Int2 operator -(Int2 a, Int2 b) => new Int2(a.x - b.x, a.y - b.y);
     public static bool operator ==(Int2 a, Int2 b) => a.x == b.x && a.y == b.y;
     public static bool operator !=(Int2 a, Int2 b) => a.x != b.x || a.y != b.y;
 
@@ -32,5 +32,10 @@ public struct Int2
     public override int GetHashCode()
     {
         return HashCode.Combine(x, y);
+    }
+
+    public override string ToString()
+    {
+        return "(" + this.x + ", " + this.y + ")";
     }
 }

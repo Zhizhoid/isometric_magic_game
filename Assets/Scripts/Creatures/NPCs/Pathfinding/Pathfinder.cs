@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 namespace Creatures.NPCs.Pathfinding
 {
@@ -15,12 +16,22 @@ namespace Creatures.NPCs.Pathfinding
             grid = GetComponent<NodeGrid>();
         }
 
+        public Vector3[] GetWaypoints(Vector3 from, Vector3 to)
+        {
+            List<Node> path = FindPath(from, to);
+
+            if(path == null)
+            {
+                return null;
+            }
+            return pathToWaypoints(path);
+        }
+
         public List<Node> FindPath(Vector3 from, Vector3 to)
         {
             Node start = grid.WorldPosToClosestWalkableNode(new Vector2(from.x, from.z));
             Node target = grid.WorldPosToClosestWalkableNode(new Vector2(to.x, to.z));
 
-            //List<Node> openSet = new List<Node>(); // TODO: make it a heap
             Heap<Node>.compareDel compare = (Node a, Node b) =>
             {
                 int res = a.fCost.CompareTo(b.fCost);
@@ -31,6 +42,7 @@ namespace Creatures.NPCs.Pathfinding
 
                 return -res;
             };
+
             Heap<Node> openSet = new Heap<Node>(grid.Size.x * grid.Size.y, compare);
             HashSet<Node> closedSet = new HashSet<Node>();
 
@@ -60,11 +72,13 @@ namespace Creatures.NPCs.Pathfinding
                         neighbour.gCost = newNeighbourGCost;
                         neighbour.hCost = getDistance(neighbour, target);
                         neighbour.parent = current;
-                        openSet.Update(neighbour);
 
                         if(!openSet.Contains(neighbour))
                         {
                             openSet.Add(neighbour);
+                        } else
+                        {
+                            openSet.Update(neighbour);
                         }
                     }
                 }
@@ -100,6 +114,36 @@ namespace Creatures.NPCs.Pathfinding
             path.Reverse();
 
             return path;
+        }
+
+        private Vector3[] pathToWaypoints(List<Node> path)
+        {
+            if(path.Count == 0)
+            {
+                return new Vector3[0];
+            }
+
+            List<Vector3> waypoints = new List<Vector3>();
+
+            Int2 prevDir = new Int2(0, 0);
+            Node prevNode = path.First();
+            foreach (Node node in path.Skip(1))
+            {
+                Int2 currDir = node.coords - prevNode.coords;
+
+                if (currDir != prevDir)
+                {
+                    waypoints.Add( new Vector3(prevNode.worldPosition.x, 0, prevNode.worldPosition.y) );
+                }
+
+                prevNode = node;
+                prevDir = currDir;
+            }
+
+            Vector2 lastNodeWorldPos = path.Last().worldPosition;
+            waypoints.Add(new Vector3(lastNodeWorldPos.x, 0f, lastNodeWorldPos.y));
+
+            return waypoints.ToArray();
         }
     }
 }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Creatures.NPCs.Pathfinding {
-
+namespace Creatures.NPCs.Pathfinding
+{
     public class NodeGrid : MonoBehaviour
     {
         [SerializeField] private LayerMask unwalkable;
@@ -25,18 +25,16 @@ namespace Creatures.NPCs.Pathfinding {
 
         private Pathfinder pathfinder;
 
-        [SerializeField] Transform player;
-        [SerializeField] Transform target;
-        private List<Node> path;
+        [SerializeField] Transform seeker; // TEST
+        [SerializeField] Transform target; // TEST
+        private List<Node> path; // TEST
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1f, gridWorldSize.y));
-            
-            if(grid != null)
+            if (grid != null)
             {
-                for(int x = 0; x < gridSize.x; x++)
+                path = pathfinder.FindPath(seeker.position, target.position);
+                for (int x = 0; x < gridSize.x; x++)
                 {
                     for (int y = 0; y < gridSize.y; y++)
                     {
@@ -44,7 +42,7 @@ namespace Creatures.NPCs.Pathfinding {
 
                         Gizmos.color = node.walkable ? Color.green : Color.red;
 
-                        if(path != null && path.Contains(node))
+                        if (path != null && path.Contains(node))
                         {
                             Gizmos.color = Color.yellow;
                         }
@@ -56,23 +54,16 @@ namespace Creatures.NPCs.Pathfinding {
             }
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1f, gridWorldSize.y));
+        }
+
         private void Awake()
         {
             pathfinder = GetComponent<Pathfinder>();
-        }
-
-        private void Start()
-        {
             createGrid();
-        }
-
-        private void Update()
-        {
-            List<Node> newPath = pathfinder.FindPath(player.position, target.position);
-            if (newPath != null)
-            {
-                path = newPath;
-            }
         }
 
         public Node WorldPosToClosestWalkableNode(Vector2 worldPos)
