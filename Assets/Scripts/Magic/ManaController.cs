@@ -10,7 +10,7 @@ namespace Magic {
 
         private float currentMana;
 
-        public event Action currentValueChanged;
+        public event Action<float> currentValueChanged;
 
         private void Start() {
             currentMana = maxMana;
@@ -18,8 +18,9 @@ namespace Magic {
 
         private void Update() {
             if (currentMana < maxMana) {
+                float prevCurrentMana = currentMana;
                 currentMana = Mathf.Min(currentMana + refillSpeed * Time.deltaTime, maxMana);
-                currentValueChanged?.Invoke();
+                currentValueChanged?.Invoke(currentMana - prevCurrentMana);
             }
         }
 
@@ -29,7 +30,7 @@ namespace Magic {
             }
             else {
                 currentMana -= amount;
-                currentValueChanged?.Invoke();
+                currentValueChanged?.Invoke(-amount);
                 return true;
             }
         }

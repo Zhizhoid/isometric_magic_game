@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Magic
 {
-    public struct CastStats
+    public class CastStats
     {
         public Vector3 castPosition;
         public Vector3 castPoint;

@@ -139,5 +139,5 @@ MonoBehaviour:
     tickDamage:
       amount: 0.5
       element: 2
-  velocity: 2
-  acceleration: 10
+  velocity: 5
+  acceleration: 25

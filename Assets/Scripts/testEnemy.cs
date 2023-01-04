@@ -9,7 +9,7 @@ public class testEnemy : MonoBehaviour
     [SerializeField] private float spellDelay = 0.5f;
     [SerializeField][Range(0f, 360f)] private float fireAngle = 0f;
 
-    private CastStats castStats;
+    private CastStats castStats = new CastStats();
     private float lastCastTime = 0f;
 
     private void Start()
