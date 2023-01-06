@@ -58,9 +58,33 @@ namespace Creatures.NPCs.Pathfinding
                     return retracePath(start, target);
                 }
 
-                foreach(Node neighbour in grid.GetNeighbours(current))
+                //foreach(Node neighbour in grid.GetNeighbours(current))
+                //{
+                //    if(!neighbour.walkable || closedSet.Contains(neighbour))
+                //    {
+                //        continue;
+                //    }
+
+                //    int newNeighbourGCost = current.gCost + getDistance(current, neighbour);
+
+                //    if (newNeighbourGCost < neighbour.gCost || !openSet.Contains(neighbour))
+                //    {
+                //        neighbour.gCost = newNeighbourGCost;
+                //        neighbour.hCost = getDistance(neighbour, target);
+                //        neighbour.parent = current;
+
+                //        if(!openSet.Contains(neighbour))
+                //        {
+                //            openSet.Add(neighbour);
+                //        } else
+                //        {
+                //            openSet.Update(neighbour);
+                //        }
+                //    }
+                //}
+                foreach (Node neighbour in grid.GetWalkableNeighbours(current))
                 {
-                    if(!neighbour.walkable || closedSet.Contains(neighbour))
+                    if (closedSet.Contains(neighbour))
                     {
                         continue;
                     }
@@ -73,10 +97,11 @@ namespace Creatures.NPCs.Pathfinding
                         neighbour.hCost = getDistance(neighbour, target);
                         neighbour.parent = current;
 
-                        if(!openSet.Contains(neighbour))
+                        if (!openSet.Contains(neighbour))
                         {
                             openSet.Add(neighbour);
-                        } else
+                        }
+                        else
                         {
                             openSet.Update(neighbour);
                         }

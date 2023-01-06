@@ -111,6 +111,7 @@ namespace Creatures.NPCs.Pathfinding
             return closestWalkableNodeRec(queue, enqued);
         }
 
+
         public List<Node> GetNeighbours(Node node)
         {
             List<Node> neighbours = new List<Node>();
@@ -132,6 +133,53 @@ namespace Creatures.NPCs.Pathfinding
             }
 
             return neighbours;
+        }
+
+        public List<Node> GetWalkableNeighbours(Node node)
+        {
+            List<Node> walkableNeighbours = new List<Node>();
+
+            // 0 1 2
+            // 7 # 3
+            // 6 5 4
+            Node[] neighbours = new Node[8];
+            neighbours[0] = inBounds(node.coords + new Int2(-1, 1)) ? grid[node.coords.x - 1, node.coords.y + 1] : null;
+            neighbours[1] = inBounds(node.coords + new Int2(0, 1)) ? grid[node.coords.x, node.coords.y + 1] : null;
+            neighbours[2] = inBounds(node.coords + new Int2(1, 1)) ? grid[node.coords.x + 1, node.coords.y + 1] : null;
+            neighbours[3] = inBounds(node.coords + new Int2(1, 0)) ? grid[node.coords.x + 1, node.coords.y] : null;
+            neighbours[4] = inBounds(node.coords + new Int2(1, -1)) ? grid[node.coords.x + 1, node.coords.y - 1] : null;
+            neighbours[5] = inBounds(node.coords + new Int2(0, -1)) ? grid[node.coords.x, node.coords.y - 1] : null;
+            neighbours[6] = inBounds(node.coords + new Int2(-1, -1)) ? grid[node.coords.x - 1, node.coords.y - 1] : null;
+            neighbours[7] = inBounds(node.coords + new Int2(-1, 0)) ? grid[node.coords.x - 1, node.coords.y] : null;
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (neighbours[i] == null) {
+                    continue;
+                }
+
+                if (i % 2 != 0) // vertical and horizontal
+                {
+                    if (neighbours[i].walkable)
+                    {
+                        walkableNeighbours.Add(neighbours[i]);
+                    }
+                }
+                else // diagonal
+                {
+                    if (neighbours[i].walkable && neighbours[ MyMath.Mod(i + 1, 8) ].walkable && neighbours[ MyMath.Mod(i - 1, 8) ].walkable)
+                    {
+                        walkableNeighbours.Add(neighbours[i]);
+                    }
+                }
+            }
+
+            return walkableNeighbours;
+        }
+
+        private bool inBounds(Int2 coords)
+        {
+            return coords.x >= 0 && coords.x < gridSize.x && coords.y >= 0 && coords.y < gridSize.y;
         }
 
         private void createGrid()

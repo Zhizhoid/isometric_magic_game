@@ -24,4 +24,10 @@ public static class MyMath
     public static float SquareOf(float f) {
         return f * f;
     }
+
+    public static int Mod(int x, int m)
+    {
+        int r = x % m;
+        return r < 0 ? m + r : r;
+    }
 }
