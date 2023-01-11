@@ -20,9 +20,9 @@ namespace Creatures.NPCs.Pathfinding
             }
         }
 
-        public static void RequestPath(Vector3 from, Vector3 to, Action<Vector3[], bool> callback)
+        public static void RequestPath(Vector3 from, Vector3 to, float seekerRadius, Action<Vector3[], bool> callback)
         {
-            Vector3[] waypoints = instance.pathfinder.GetWaypoints(from, to);
+            Vector3[] waypoints = instance.pathfinder.GetWaypoints(from, to, seekerRadius);
             bool success = waypoints != null;
             callback(waypoints, success);
         }

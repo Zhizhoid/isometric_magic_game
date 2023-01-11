@@ -181,6 +181,7 @@ GameObject:
   - component: {fileID: 3349340841469893586}
   - component: {fileID: 3349340841469893585}
   - component: {fileID: 3349340841469893587}
+  - component: {fileID: 7712150390256228792}
   - component: {fileID: 1846204969528787669}
   m_Layer: 0
   m_Name: TestEnemy
@@ -238,7 +239,6 @@ MonoBehaviour:
   target: {fileID: 0}
   pursueDistance: 10
   attackDistance: 5
-  moveSpeed: 4
   spell: {fileID: 11400000, guid: 8c26df4150ea0804e8849c5fc69de903, type: 2}
   spellDelay: 0.1
 --- !u!114 &3349340841469893586
@@ -280,6 +280,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxMana: 100
   refillSpeed: 5
+--- !u!114 &7712150390256228792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3349340841469893578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03e64d4f7e230b488f9734c819aa6e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
 --- !u!95 &1846204969528787669
 Animator:
   serializedVersion: 4

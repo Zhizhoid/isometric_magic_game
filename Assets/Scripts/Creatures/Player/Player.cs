@@ -13,9 +13,8 @@ namespace Creatures.Player
 
         [SerializeField] private Camera cam;
 
-        protected override void Start()
+        private void Awake()
         {
-            base.Start();
             pMovement = GetComponent<PlayerMovement>();
             pCombat = GetComponent<PlayerCombat>();
         }

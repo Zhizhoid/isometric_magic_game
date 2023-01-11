@@ -16,9 +16,9 @@ namespace Creatures.NPCs.Pathfinding
             grid = GetComponent<NodeGrid>();
         }
 
-        public Vector3[] GetWaypoints(Vector3 from, Vector3 to)
+        public Vector3[] GetWaypoints(Vector3 from, Vector3 to, float seekerRadius)
         {
-            List<Node> path = FindPath(from, to);
+            List<Node> path = FindPath(from, to, seekerRadius);
 
             if(path == null)
             {
@@ -27,10 +27,12 @@ namespace Creatures.NPCs.Pathfinding
             return pathToWaypoints(path);
         }
 
-        public List<Node> FindPath(Vector3 from, Vector3 to)
+
+        public List<Node> FindPath(Vector3 from, Vector3 to, float seekerRadius)
         {
-            Node start = grid.WorldPosToClosestWalkableNode(new Vector2(from.x, from.z));
-            Node target = grid.WorldPosToClosestWalkableNode(new Vector2(to.x, to.z));
+            Node start = grid.WorldPosToClosestWalkableNode(new Vector2(from.x, from.z), seekerRadius);
+            Node target = grid.WorldPosToClosestWalkableNode(new Vector2(to.x, to.z), seekerRadius);
+
 
             Heap<Node>.compareDel compare = (Node a, Node b) =>
             {
@@ -58,33 +60,9 @@ namespace Creatures.NPCs.Pathfinding
                     return retracePath(start, target);
                 }
 
-                //foreach(Node neighbour in grid.GetNeighbours(current))
-                //{
-                //    if(!neighbour.walkable || closedSet.Contains(neighbour))
-                //    {
-                //        continue;
-                //    }
-
-                //    int newNeighbourGCost = current.gCost + getDistance(current, neighbour);
-
-                //    if (newNeighbourGCost < neighbour.gCost || !openSet.Contains(neighbour))
-                //    {
-                //        neighbour.gCost = newNeighbourGCost;
-                //        neighbour.hCost = getDistance(neighbour, target);
-                //        neighbour.parent = current;
-
-                //        if(!openSet.Contains(neighbour))
-                //        {
-                //            openSet.Add(neighbour);
-                //        } else
-                //        {
-                //            openSet.Update(neighbour);
-                //        }
-                //    }
-                //}
                 foreach (Node neighbour in grid.GetWalkableNeighbours(current))
                 {
-                    if (closedSet.Contains(neighbour))
+                    if (closedSet.Contains(neighbour) || grid.UnwalkableNodesInSeekerRadius(neighbour, seekerRadius))
                     {
                         continue;
                     }

@@ -27,13 +27,14 @@ namespace Creatures.NPCs.Pathfinding
 
         [SerializeField] Transform seeker; // TEST
         [SerializeField] Transform target; // TEST
+        [SerializeField] CharacterController targetCC;
         private List<Node> path; // TEST
 
         private void OnDrawGizmos()
         {
             if (grid != null)
             {
-                path = pathfinder.FindPath(seeker.position, target.position);
+                path = pathfinder.FindPath(seeker.position, target.position, targetCC.radius);
                 for (int x = 0; x < gridSize.x; x++)
                 {
                     for (int y = 0; y < gridSize.y; y++)
@@ -66,9 +67,9 @@ namespace Creatures.NPCs.Pathfinding
             createGrid();
         }
 
-        public Node WorldPosToClosestWalkableNode(Vector2 worldPos)
+        public Node WorldPosToClosestWalkableNode(Vector2 worldPos, float seekerRadius)
         {
-            return ClosestWalkableNode(WorldPosToNode(worldPos));
+            return ClosestWalkableNode(WorldPosToNode(worldPos), seekerRadius);
         }
 
         public Node WorldPosToNode(Vector2 worldPos)
@@ -79,7 +80,7 @@ namespace Creatures.NPCs.Pathfinding
             return grid[x, y];
         }
 
-        public Node ClosestWalkableNode(Node node)
+        public Node ClosestWalkableNode(Node node, float seekerRadius)
         {
             Queue<Node> queue = new Queue<Node>();
             HashSet<Node> enqued = new HashSet<Node>();
@@ -87,13 +88,14 @@ namespace Creatures.NPCs.Pathfinding
             queue.Enqueue(node);
             enqued.Add(node);
 
-            return closestWalkableNodeRec(queue, enqued);
+            return closestWalkableNodeRec(queue, enqued, seekerRadius);
         }
 
-        private Node closestWalkableNodeRec(Queue<Node> queue, HashSet<Node> enqued)
+        private Node closestWalkableNodeRec(Queue<Node> queue, HashSet<Node> enqued, float seekerRadius)
         {
             Node node = queue.Dequeue();
-            if(node.walkable)
+            if (node.walkable && !UnwalkableNodesInSeekerRadius(node, seekerRadius))
+            //if (node.walkable)
             {
                 return node;
             }
@@ -108,7 +110,7 @@ namespace Creatures.NPCs.Pathfinding
                 enqued.Add(node);
             }
 
-            return closestWalkableNodeRec(queue, enqued);
+            return closestWalkableNodeRec(queue, enqued, seekerRadius);
         }
 
 
@@ -175,6 +177,42 @@ namespace Creatures.NPCs.Pathfinding
             }
 
             return walkableNeighbours;
+        }
+
+        public bool UnwalkableNodesInSeekerRadius(Node node, float seekerRadius)
+        {
+            if(!node.walkable)
+            {
+                return true;
+            }
+
+            int intersectingNodesHorizontal = (int)Mathf.Ceil( (seekerRadius - nodeSize / 2) / nodeSize ); // same as (2*seekerRadius - nodeSize) / (2*nodeSize)
+            float seekerRadiusMultipliedAndSquared = MyMath.SquareOf(seekerRadius * 10);
+
+            for(int xOffset = -intersectingNodesHorizontal; xOffset <= intersectingNodesHorizontal; xOffset++)
+            {
+                int x = node.coords.x + xOffset;
+                if (x < 0 || x >= gridSize.x)
+                {
+                    continue;
+                }
+
+                for (int yOffset = -intersectingNodesHorizontal; yOffset <= intersectingNodesHorizontal; yOffset++)
+                {
+                    int y = node.coords.y + yOffset;
+                    if (y < 0 || y >= gridSize.y)
+                    {
+                        continue;
+                    }
+
+                    if(xOffset*xOffset + yOffset*yOffset <= seekerRadiusMultipliedAndSquared && !grid[x, y].walkable)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private bool inBounds(Int2 coords)

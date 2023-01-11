@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Creatures.Player {
 
-    [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMovement : MonoBehaviour
     {
@@ -16,7 +15,7 @@ namespace Creatures.Player {
 
         private float targetRot;
 
-        private void Start()
+        private void Awake()
         {
             ch = GetComponent<CharacterController>();
             player = GetComponent<Player>();

@@ -16,7 +16,7 @@ namespace Creatures.Player
         private Player player;
         private CastStats castStats = new CastStats();
 
-        private void Start() {
+        private void Awake() {
             player = GetComponent<Player>();
 
             castStats.casterID = gameObject.GetInstanceID();
