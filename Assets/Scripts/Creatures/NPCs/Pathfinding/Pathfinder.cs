@@ -30,7 +30,8 @@ namespace Creatures.NPCs.Pathfinding
 
         public List<Node> FindPath(Vector3 from, Vector3 to, float seekerRadius)
         {
-            Node start = grid.WorldPosToClosestWalkableNode(from, seekerRadius);
+            //Node start = grid.WorldPosToClosestWalkableNode(from, seekerRadius);
+            Node start = grid.WorldPosToNode(from);
             Node target = grid.WorldPosToClosestWalkableNode(to, seekerRadius);
 
             Heap<Node>.compareDel compare = (Node a, Node b) =>
@@ -56,7 +57,7 @@ namespace Creatures.NPCs.Pathfinding
 
                 if(current == target)
                 {
-                    return retracePath(start, target, from);
+                    return retracePath(start, target);
                 }
 
                 foreach (Node neighbour in grid.GetWalkableNeighbours(current))
@@ -104,7 +105,7 @@ namespace Creatures.NPCs.Pathfinding
             }
         }
 
-        private List<Node> retracePath(Node start, Node end, Vector3 seekerStartPosition)
+        private List<Node> retracePath(Node start, Node end)
         {
             List<Node> path = new List<Node>();
             Node current = end;
@@ -112,11 +113,6 @@ namespace Creatures.NPCs.Pathfinding
             {
                 path.Add(current);
                 current = current.parent;
-            }
-
-            if(grid.WorldPosToNode(seekerStartPosition).coords != start.coords)
-            {
-                path.Add(start);
             }
 
             path.Reverse();
