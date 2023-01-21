@@ -30,9 +30,8 @@ namespace Creatures.NPCs.Pathfinding
 
         public List<Node> FindPath(Vector3 from, Vector3 to, float seekerRadius)
         {
-            Node start = grid.WorldPosToClosestWalkableNode(new Vector2(from.x, from.z), seekerRadius);
-            Node target = grid.WorldPosToClosestWalkableNode(new Vector2(to.x, to.z), seekerRadius);
-
+            Node start = grid.WorldPosToClosestWalkableNode(from, seekerRadius);
+            Node target = grid.WorldPosToClosestWalkableNode(to, seekerRadius);
 
             Heap<Node>.compareDel compare = (Node a, Node b) =>
             {
@@ -57,12 +56,12 @@ namespace Creatures.NPCs.Pathfinding
 
                 if(current == target)
                 {
-                    return retracePath(start, target);
+                    return retracePath(start, target, from);
                 }
 
                 foreach (Node neighbour in grid.GetWalkableNeighbours(current))
                 {
-                    if (closedSet.Contains(neighbour) || grid.UnwalkableNodesInSeekerRadius(neighbour, seekerRadius))
+                    if (closedSet.Contains(neighbour) || neighbour.distanceToClosestUnwalkableNode < seekerRadius)
                     {
                         continue;
                     }
@@ -105,7 +104,7 @@ namespace Creatures.NPCs.Pathfinding
             }
         }
 
-        private List<Node> retracePath(Node start, Node end)
+        private List<Node> retracePath(Node start, Node end, Vector3 seekerStartPosition)
         {
             List<Node> path = new List<Node>();
             Node current = end;
@@ -114,6 +113,12 @@ namespace Creatures.NPCs.Pathfinding
                 path.Add(current);
                 current = current.parent;
             }
+
+            if(grid.WorldPosToNode(seekerStartPosition).coords != start.coords)
+            {
+                path.Add(start);
+            }
+
             path.Reverse();
 
             return path;
@@ -128,11 +133,12 @@ namespace Creatures.NPCs.Pathfinding
 
             List<Vector3> waypoints = new List<Vector3>();
 
-            Int2 prevDir = new Int2(0, 0);
+            Vector2Int prevDir = new Vector2Int(0, 0);
             Node prevNode = path.First();
             foreach (Node node in path.Skip(1))
             {
-                Int2 currDir = node.coords - prevNode.coords;
+                //Debug.DrawLine(new Vector3(prevNode.worldPosition.x, 0, prevNode.worldPosition.y), new Vector3(node.worldPosition.x, 0, node.worldPosition.y), Color.black);
+                Vector2Int currDir = node.coords - prevNode.coords;
 
                 if (currDir != prevDir)
                 {

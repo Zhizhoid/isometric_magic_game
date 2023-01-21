@@ -12,8 +12,8 @@ namespace Creatures.NPCs.Pathfinding
         [SerializeField][Range(0.1f, 1f)] private float nodeSize;
 
         private Node[,] grid;
-        private Int2 gridSize;
-        public Int2 Size
+        private Vector2Int gridSize;
+        public Vector2Int Size
         {
             get
             {
@@ -27,28 +27,50 @@ namespace Creatures.NPCs.Pathfinding
 
         [SerializeField] Transform seeker; // TEST
         [SerializeField] Transform target; // TEST
-        [SerializeField] CharacterController targetCC;
+        [SerializeField] CharacterController seekerCC; // TEST
         private List<Node> path; // TEST
+        public enum GridDisplayMode
+        {
+            isWalkable,
+            distanceFromClosestUnwalkable,
+            ifSeekerCanGoThere
+        }
+
+        [SerializeField] private GridDisplayMode gridDisplayMode;
+
 
         private void OnDrawGizmos()
         {
             if (grid != null)
             {
-                path = pathfinder.FindPath(seeker.position, target.position, targetCC.radius);
+                path = pathfinder.FindPath(seeker.position, target.position, seekerCC.radius);
                 for (int x = 0; x < gridSize.x; x++)
                 {
                     for (int y = 0; y < gridSize.y; y++)
                     {
                         Node node = grid[x, y];
 
-                        Gizmos.color = node.walkable ? Color.green : Color.red;
+                        //Gizmos.color = node.walkable ? Color.green : Color.red;
+                        Gizmos.color = Color.Lerp(Color.red, Color.green, node.distanceToClosestUnwalkableNode/seekerCC.radius);
 
-                        if (path != null && path.Contains(node))
+                        Gizmos.color = gridDisplayMode switch
+                        {
+                            GridDisplayMode.isWalkable => node.walkable ? Color.green : Color.red,
+                            GridDisplayMode.distanceFromClosestUnwalkable => Color.Lerp(Color.red, Color.green, node.distanceToClosestUnwalkableNode / seekerCC.radius),
+                            GridDisplayMode.ifSeekerCanGoThere => node.walkable ? (seekerCC.radius <= node.distanceToClosestUnwalkableNode ? Color.green : Color.Lerp(Color.green, Color.red, 0.5f)) : Color.red,
+                            GridDisplayMode => Color.black
+                        };
+
+                        if (node == WorldPosToNode(seeker.position))
+                        {
+                            Gizmos.color = Color.cyan;
+                        }
+                        else if (path != null && path.Contains(node))
                         {
                             Gizmos.color = Color.yellow;
                         }
 
-                        Gizmos.DrawCube(new Vector3(node.worldPosition.x, transform.position.y, node.worldPosition.y),
+                            Gizmos.DrawCube(new Vector3(node.worldPosition.x, transform.position.y, node.worldPosition.y),
                                         new Vector3(nodeSize * 0.9f, 0.2f, nodeSize * 0.9f));
                     }
                 }
@@ -67,17 +89,17 @@ namespace Creatures.NPCs.Pathfinding
             createGrid();
         }
 
-        public Node WorldPosToClosestWalkableNode(Vector2 worldPos, float seekerRadius)
+        public Node WorldPosToNode(Vector3 worldPos)
         {
-            return ClosestWalkableNode(WorldPosToNode(worldPos), seekerRadius);
-        }
-
-        public Node WorldPosToNode(Vector2 worldPos)
-        {
-            int x = Mathf.CeilToInt(Mathf.Clamp01((worldPos.x - worldBottomLeft.x) / gridWorldSize.x) * (gridSize.x - 1));
-            int y = Mathf.CeilToInt(Mathf.Clamp01((worldPos.y - worldBottomLeft.y) / gridWorldSize.y) * (gridSize.y - 1));
+            int x = Mathf.Clamp(Mathf.FloorToInt((worldPos.x - worldBottomLeft.x + nodeSize/2) / nodeSize), 0, gridSize.x - 1);
+            int y = Mathf.Clamp(Mathf.FloorToInt((worldPos.z - worldBottomLeft.y + nodeSize/2) / nodeSize), 0, gridSize.y - 1);
 
             return grid[x, y];
+        }
+
+        public Node WorldPosToClosestWalkableNode(Vector3 worldPos, float seekerRadius)
+        {
+            return ClosestWalkableNode(WorldPosToNode(worldPos), seekerRadius);
         }
 
         public Node ClosestWalkableNode(Node node, float seekerRadius)
@@ -88,19 +110,22 @@ namespace Creatures.NPCs.Pathfinding
             queue.Enqueue(node);
             enqued.Add(node);
 
-            return closestWalkableNodeRec(queue, enqued, seekerRadius);
+            return closestWalkableNodeRec(queue, enqued, seekerRadius, node);
         }
 
-        private Node closestWalkableNodeRec(Queue<Node> queue, HashSet<Node> enqued, float seekerRadius)
+        private Node closestWalkableNodeRec(Queue<Node> queue, HashSet<Node> enqued, float seekerRadius, Node start)
         {
             Node node = queue.Dequeue();
-            if (node.walkable && !UnwalkableNodesInSeekerRadius(node, seekerRadius))
-            //if (node.walkable)
+
+            if(node.walkable && node.distanceToClosestUnwalkableNode >= seekerRadius)
             {
+                Debug.DrawLine(new Vector3(start.worldPosition.x, 0f, start.worldPosition.y), new Vector3(node.worldPosition.x, 0f, node.worldPosition.y), Color.magenta);
                 return node;
             }
 
-            foreach(Node neighbour in GetNeighbours(node))
+            Debug.DrawLine(new Vector3(start.worldPosition.x, 0f, start.worldPosition.y), new Vector3(node.worldPosition.x, 0f, node.worldPosition.y), Color.black);
+
+            foreach (Node neighbour in GetNeighbours(node))
             {
                 if (enqued.Contains(neighbour))
                 {
@@ -110,7 +135,7 @@ namespace Creatures.NPCs.Pathfinding
                 enqued.Add(node);
             }
 
-            return closestWalkableNodeRec(queue, enqued, seekerRadius);
+            return closestWalkableNodeRec(queue, enqued, seekerRadius, node);
         }
 
 
@@ -145,14 +170,14 @@ namespace Creatures.NPCs.Pathfinding
             // 7 # 3
             // 6 5 4
             Node[] neighbours = new Node[8];
-            neighbours[0] = inBounds(node.coords + new Int2(-1, 1)) ? grid[node.coords.x - 1, node.coords.y + 1] : null;
-            neighbours[1] = inBounds(node.coords + new Int2(0, 1)) ? grid[node.coords.x, node.coords.y + 1] : null;
-            neighbours[2] = inBounds(node.coords + new Int2(1, 1)) ? grid[node.coords.x + 1, node.coords.y + 1] : null;
-            neighbours[3] = inBounds(node.coords + new Int2(1, 0)) ? grid[node.coords.x + 1, node.coords.y] : null;
-            neighbours[4] = inBounds(node.coords + new Int2(1, -1)) ? grid[node.coords.x + 1, node.coords.y - 1] : null;
-            neighbours[5] = inBounds(node.coords + new Int2(0, -1)) ? grid[node.coords.x, node.coords.y - 1] : null;
-            neighbours[6] = inBounds(node.coords + new Int2(-1, -1)) ? grid[node.coords.x - 1, node.coords.y - 1] : null;
-            neighbours[7] = inBounds(node.coords + new Int2(-1, 0)) ? grid[node.coords.x - 1, node.coords.y] : null;
+            neighbours[0] = inBounds(node.coords + new Vector2Int(-1, 1)) ? grid[node.coords.x - 1, node.coords.y + 1] : null;
+            neighbours[1] = inBounds(node.coords + new Vector2Int(0, 1)) ? grid[node.coords.x, node.coords.y + 1] : null;
+            neighbours[2] = inBounds(node.coords + new Vector2Int(1, 1)) ? grid[node.coords.x + 1, node.coords.y + 1] : null;
+            neighbours[3] = inBounds(node.coords + new Vector2Int(1, 0)) ? grid[node.coords.x + 1, node.coords.y] : null;
+            neighbours[4] = inBounds(node.coords + new Vector2Int(1, -1)) ? grid[node.coords.x + 1, node.coords.y - 1] : null;
+            neighbours[5] = inBounds(node.coords + new Vector2Int(0, -1)) ? grid[node.coords.x, node.coords.y - 1] : null;
+            neighbours[6] = inBounds(node.coords + new Vector2Int(-1, -1)) ? grid[node.coords.x - 1, node.coords.y - 1] : null;
+            neighbours[7] = inBounds(node.coords + new Vector2Int(-1, 0)) ? grid[node.coords.x - 1, node.coords.y] : null;
 
             for (int i = 0; i < 8; i++)
             {
@@ -179,43 +204,7 @@ namespace Creatures.NPCs.Pathfinding
             return walkableNeighbours;
         }
 
-        public bool UnwalkableNodesInSeekerRadius(Node node, float seekerRadius)
-        {
-            if(!node.walkable)
-            {
-                return true;
-            }
-
-            int intersectingNodesHorizontal = (int)Mathf.Ceil( (seekerRadius - nodeSize / 2) / nodeSize ); // same as (2*seekerRadius - nodeSize) / (2*nodeSize)
-            float seekerRadiusMultipliedAndSquared = MyMath.SquareOf(seekerRadius * 10);
-
-            for(int xOffset = -intersectingNodesHorizontal; xOffset <= intersectingNodesHorizontal; xOffset++)
-            {
-                int x = node.coords.x + xOffset;
-                if (x < 0 || x >= gridSize.x)
-                {
-                    continue;
-                }
-
-                for (int yOffset = -intersectingNodesHorizontal; yOffset <= intersectingNodesHorizontal; yOffset++)
-                {
-                    int y = node.coords.y + yOffset;
-                    if (y < 0 || y >= gridSize.y)
-                    {
-                        continue;
-                    }
-
-                    if(xOffset*xOffset + yOffset*yOffset <= seekerRadiusMultipliedAndSquared && !grid[x, y].walkable)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private bool inBounds(Int2 coords)
+        private bool inBounds(Vector2Int coords)
         {
             return coords.x >= 0 && coords.x < gridSize.x && coords.y >= 0 && coords.y < gridSize.y;
         }
@@ -241,9 +230,37 @@ namespace Creatures.NPCs.Pathfinding
                         unwalkable
                     );
 
-                    grid[x, y] = new Node(worldPos2D, walkable, new Int2(x, y));
+                    grid[x, y] = new Node(worldPos2D, walkable, new Vector2Int(x, y));
                 }
             }
+
+            foreach(Node n1 in grid) {
+                n1.distanceToClosestUnwalkableNode = int.MaxValue;
+                foreach(Node n2 in grid)
+                {
+                    if(!n2.walkable)
+                    {
+                        float newPossibleDistance = nodesTouchRadius(n1, n2);
+                        if(newPossibleDistance < n1.distanceToClosestUnwalkableNode)
+                        {
+                            n1.distanceToClosestUnwalkableNode = newPossibleDistance;
+                        }
+                    }
+                }
+            }
+        }
+
+        private float nodesTouchRadius(Node a, Node b) // distance from the center of node A to the closest point or edge of B (or its center, if the nodes are the same)
+        {
+            int coordDeltaX = a.coords.x - b.coords.x;
+            int coordDeltaY = a.coords.y - b.coords.y;
+
+            Vector2 closestPoint = new Vector2(
+                b.worldPosition.x + (nodeSize / 2) * Mathf.Clamp(coordDeltaX, -1, 1),
+                b.worldPosition.y + (nodeSize / 2) * Mathf.Clamp(coordDeltaY, -1, 1)
+                );
+
+            return Vector2.Distance(a.worldPosition, closestPoint);
         }
     }
 }

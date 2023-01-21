@@ -7,7 +7,7 @@ namespace Creatures.NPCs.Pathfinding
     {
         public Vector2 worldPosition;
         public bool walkable;
-        public Int2 coords;
+        public Vector2Int coords;
 
         public int gCost; // the smallest known distance from start node
         public int hCost; // estimated distance to target node
@@ -16,6 +16,8 @@ namespace Creatures.NPCs.Pathfinding
             get { return gCost + hCost; }
         }
         public Node parent;
+
+        public float distanceToClosestUnwalkableNode;
 
         private int heapIndex;
         public int HeapIndex
@@ -30,7 +32,7 @@ namespace Creatures.NPCs.Pathfinding
             }
         }
 
-        public Node(Vector2 _worldPosition, bool _walkable, Int2 _coords)
+        public Node(Vector2 _worldPosition, bool _walkable, Vector2Int _coords)
         {
             worldPosition = _worldPosition;
             walkable = _walkable;
@@ -38,6 +40,7 @@ namespace Creatures.NPCs.Pathfinding
             gCost = 0;
             hCost = 0;
             parent = null;
+            distanceToClosestUnwalkableNode = float.PositiveInfinity;
         }
     }
 }

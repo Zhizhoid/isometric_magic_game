@@ -24,8 +24,8 @@ public class testEnemy : MonoBehaviour
         {
             castStats.castPosition = transform.position;
 
-            Vector2 castPoint2D = MyMath.RotateVector2(Vector2.right, fireAngle * Mathf.Deg2Rad);
-            castStats.castPoint = transform.position + new Vector3(castPoint2D.x, 0f, castPoint2D.y);
+            Vector2 castPoVector2IntD = MyMath.RotateVector2(Vector2.right, fireAngle * Mathf.Deg2Rad);
+            castStats.castPoint = transform.position + new Vector3(castPoVector2IntD.x, 0f, castPoVector2IntD.y);
 
             spell.Cast(castStats);
             lastCastTime = Time.time;
