@@ -217,7 +217,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &211019005
 Transform:
   m_ObjectHideFlags: 0
@@ -937,7 +937,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   gridWorldSize: {x: 30, y: 30}
-  nodeSize: 1
+  nodeSize: 0.5
   seeker: {fileID: 542337069}
   target: {fileID: 482340383}
   seekerCC: {fileID: 542337076}
@@ -2312,7 +2312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1988885644
 Transform:
   m_ObjectHideFlags: 0
@@ -2549,7 +2549,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3349340841469893583, guid: 0ef6cf3cd02cdf24e97a0488c566f5e5, type: 3}
       propertyPath: m_Radius
-      value: 1.5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3349340841469893584, guid: 0ef6cf3cd02cdf24e97a0488c566f5e5, type: 3}
       propertyPath: target

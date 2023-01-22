@@ -32,7 +32,8 @@ namespace Creatures.NPCs.Pathfinding
         {
             //Node start = grid.WorldPosToClosestWalkableNode(from, seekerRadius);
             Node start = grid.WorldPosToNode(from);
-            Node target = grid.WorldPosToClosestWalkableNode(to, seekerRadius);
+            Node target = grid.WorldPosToNode(to);
+            //Node target = grid.WorldPosToClosestWalkableNode(to, seekerRadius);
 
             Heap<Node>.compareDel compare = (Node a, Node b) =>
             {
@@ -50,6 +51,9 @@ namespace Creatures.NPCs.Pathfinding
 
             openSet.Add(start);
 
+            Node closestNodeToTarget = null;
+            int closestDistanceToTarget = int.MaxValue;
+
             while(openSet.Count > 0)
             {
                 Node current = openSet.Pop();
@@ -58,6 +62,13 @@ namespace Creatures.NPCs.Pathfinding
                 if(current == target)
                 {
                     return retracePath(start, target);
+                }
+
+                int distanceToTarget = getDistance(current, target);
+                if (distanceToTarget < closestDistanceToTarget)
+                {
+                    closestNodeToTarget = current;
+                    closestDistanceToTarget = distanceToTarget;
                 }
 
                 foreach (Node neighbour in grid.GetWalkableNeighbours(current))
@@ -87,7 +98,8 @@ namespace Creatures.NPCs.Pathfinding
                 }
             }
 
-            return null;
+            //return null;
+            return retracePath(start, closestNodeToTarget);
         }
 
         private int getDistance(Node a, Node b)
@@ -133,7 +145,6 @@ namespace Creatures.NPCs.Pathfinding
             Node prevNode = path.First();
             foreach (Node node in path.Skip(1))
             {
-                //Debug.DrawLine(new Vector3(prevNode.worldPosition.x, 0, prevNode.worldPosition.y), new Vector3(node.worldPosition.x, 0, node.worldPosition.y), Color.black);
                 Vector2Int currDir = node.coords - prevNode.coords;
 
                 if (currDir != prevDir)
